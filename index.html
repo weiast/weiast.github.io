@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="be">
+<head>
+    <meta charset="UTF-8">
+    <title>Тэст: Знакі прыпынку ў складаных сказах</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18pt;
+            line-height: 1.6;
+            color: #222;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #F290C7; /* Асноўны ружовы фон */
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #85004B;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            font-size: 30pt;
+            color: #85004B;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+        .subtitle {
+            font-size: 20pt;
+            font-style: italic;
+            color: #85004B;
+            margin: 0;
+        }
+        .instructions {
+            background-color: #fff;
+            border-left: 4px solid #CD0074;
+            padding: 15px;
+            margin-bottom: 30px;
+            font-size: 17pt;
+            border-radius: 0 4px 4px 0;
+            color: #85004B;
+            box-shadow: 0 2px 4px rgba(133,0,75,0.1);
+        }
+        .instructions ul {
+            margin: 5px 0 0 0;
+            padding-left: 20px;
+            color: #222;
+        }
+        .question {
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #992667;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(153,38,103,0.1);
+            transition: all 0.3s ease;
+        }
+        .question-title {
+            font-weight: bold;
+            font-size: 20pt;
+            margin-bottom: 12px;
+            color: #85004B;
+        }
+        .question-type {
+            font-weight: normal;
+            font-style: italic;
+            font-size: 16pt;
+            color: #992667;
+            margin-left: 8px;
+        }
+        .options-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        .options-table td {
+            padding: 6px 0;
+            vertical-align: top;
+        }
+        .input-cell {
+            width: 30px;
+            text-align: left;
+        }
+        .text-cell {
+            font-size: 18pt;
+        }
+        .text-area {
+            width: 100%;
+            height: 120px;
+            border: 1px solid #992667;
+            border-radius: 4px;
+            margin-top: 12px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 17pt;
+        }
+        .sentence-box {
+            margin: 12px 0;
+            font-size: 18pt;
+            font-style: italic;
+            padding: 10px 15px;
+            border-left: 4px solid #85004B;
+            background-color: #fdf5f9;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #CD0074;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 22pt;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(205,0,116,0.2);
+            transition: background-color 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #85004B;
+        }
+        #result-container {
+            display: none;
+            background-color: #fff;
+            border: 2px solid #E73B9D;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-size: 20pt;
+            color: #85004B;
+            box-shadow: 0 2px 4px rgba(133,0,75,0.1);
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 17pt;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #c6f6d5;
+            color: #22543d;
+            border-left: 4px solid #38a169;
+        }
+        .feedback.incorrect {
+            background-color: #fed7d7;
+            color: #742a2a;
+            border-left: 4px solid #e53e3e;
+        }
+        .feedback.written {
+            background-color: #fdf5f9;
+            color: #85004B;
+            border-left: 4px solid #E73B9D;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Тэст па беларускай мове</h1>
+        <div class="subtitle">Тэма: Знакі прыпынку ў складаных сказах</div>
+    </div>
+
+    <div id="result-container">
+        <strong>Вынік тэсту:</strong> <span id="score-display"></span> з 9 балаў за тэставыя пытанні.<br>
+        <small style="color: #992667;">*Пытанне 10 правяраецца настаўнікам (самастойна па ўзоры ніжэй).</small>
+    </div>
+
+    <div class="instructions">
+        <strong>Інструкцыя для выканання:</strong>
+        <ul>
+            <li>Пытанні 1–2 змяшчаюць толькі <strong>адзін</strong> правільны адказ.</li>
+            <li>Пытанні 3–9 змяшчаюць <strong>некалькі</strong> (два або больш) правільных адказаў.</li>
+            <li>Пытанне 10 патрабуе <strong>пісьмовага</strong> разгорнутага адказу.</li>
+        </ul>
+    </div>
+
+    <form id="quizForm" onsubmit="event.preventDefault(); checkQuiz();">
+
+        <div class="question" id="box-q1">
+            <div class="question-title">1. Адзначце складаназлучаны сказ, у якім паміж прэдыкатыўнымі часткамі трэба паставіць працяжнік (знакі прыпынку не расстаўлены):<span class="question-type">(адзін правільны адказ)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q1" value="A" id="q1a"></td>
+                    <td class="text-cell"><label for="q1a">А) Надышоў вечар і на небе загарэліся першыя зоркі.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q1" value="B" id="q1b"></td>
+                    <td class="text-cell"><label for="q1b">Б) З бліжэйшага лесу веяла прахалодай і чуўся спеў салаўя.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q1" value="C" id="q1c"></td>
+                    <td class="text-cell"><label for="q1c">В) Хвіліна і ўсё навокал закруцілася ў завірусе.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q1" value="G" id="q1g"></td>
+                    <td class="text-cell"><label for="q1g">Г) Вецер ужо суцішыўся аднак дождж усё яшчэ ішоў.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q1"></div>
+        </div>
+
+        <div class="question" id="box-q2">
+            <div class="question-title">2. У якім выпадку паміж часткамі складаназлучанага сказа коска НЕ ставіцца (знакі прыпынку не расстаўлены):<span class="question-type">(адзін правільны адказ)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q2" value="A" id="q2a"></td>
+                    <td class="text-cell"><label for="q2a">А) Калі абедзве часткі маюць агульны дарадны член сказа ці агульную пабочную канструкцыю.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q2" value="B" id="q2b"></td>
+                    <td class="text-cell"><label for="q2b">Б) Калі часткі звязаны супраціўнымі злучнікамі "а", "але", "аднак".</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q2" value="C" id="q2c"></td>
+                    <td class="text-cell"><label for="q2c">В) Калі другая частка выражае вынік ці рэзкае супрацьпастаўленне.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="radio" name="q2" value="G" id="q2g"></td>
+                    <td class="text-cell"><label for="q2g">Г) Калі сказ складаецца з трох і больш прэдыкатыўных частак.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q2"></div>
+        </div>
+
+        <div class="question" id="box-q3">
+            <div class="question-title">3. Адзначце складаназалежныя сказы, у якіх даданая частка павінна аддзяляцца коскай (знакі прыпынку не расстаўлены):<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q3" value="A" id="q3a"></td>
+                    <td class="text-cell"><label for="q3a">А) Мы ведалі што хутка наступяць цёплыя дні.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q3" value="B" id="q3b"></td>
+                    <td class="text-cell"><label for="q3b">Б) Чалавек які любіць сваю зямлю заўсёды будзе шчаслівы.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q3" value="C" id="q3c"></td>
+                    <td class="text-cell"><label for="q3c">В) Ён прыйшоў у школу не каб вучыцца а каб сустрэць сяброў.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q3" value="G" id="q3g"></td>
+                    <td class="text-cell"><label for="q3g">Г) Нам усім хацелася даведацца куды вядзе гэтая лясная сцежка.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q3"></div>
+        </div>
+
+        <div class="question" id="box-q4">
+            <div class="question-title">4. Вызначце бяззлучнікавыя складаныя сказы, у якіх паміж часткамі трэба паставіць двукроп’е (знакі прыпынку не расстаўлены):<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q4" value="A" id="q4a"></td>
+                    <td class="text-cell"><label for="q4a">А) Я ведаю наперадзе нас чакаюць новыя адкрыцці.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q4" value="B" id="q4b"></td>
+                    <td class="text-cell"><label for="q4b">Б) Сонца ўзышло птушкі весела заспявалі ў садзе.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q4" value="C" id="q4c"></td>
+                    <td class="text-cell"><label for="q4c">В) На вуліцу нельга было выйсці ліў моцны дождж.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q4" value="G" id="q4g"></td>
+                    <td class="text-cell"><label for="q4g">Г) Навучыўся сам навучы і другога.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q4"></div>
+        </div>
+
+        <div class="question" id="box-q5">
+            <div class="question-title">5. Адзначце сказы, у якіх правільна расстаўлены знакі прыпынку пры сутыкненні двух злучнікаў:<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q5" value="A" id="q5a"></td>
+                    <td class="text-cell"><label for="q5a">А) Маці сказала, што, калі скончыцца дождж, мы пойдзем у лес.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q5" value="B" id="q5b"></td>
+                    <td class="text-cell"><label for="q5b">Б) Настаўнік папярэдзіў, што калі ты не выканаеш заданне, то прыйдзецца застацца пасля ўрокаў.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q5" value="C" id="q5c"></td>
+                    <td class="text-cell"><label for="q5c">В) Брат паабяцаў, што калі прыедзе, абавязкова прывязе падарунак.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q5" value="G" id="q5g"></td>
+                    <td class="text-cell"><label for="q5g">Г) Мы ведалі, што, хоць лета і заканчваецца, наперадзе яшчэ шмат цёплых дзён.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q5"></div>
+        </div>
+
+        <div class="question" id="box-q6">
+            <div class="question-title">6. У якіх складаназлучаных сказах трэба паставіць коску перад злучнікам "і" (знакі прыпынку не расстаўлены):<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q6" value="A" id="q6a"></td>
+                    <td class="text-cell"><label for="q6a">А) Падаў жоўты ліст і ціха шумеў восеньскі лес.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q6" value="B" id="q6b"></td>
+                    <td class="text-cell"><label for="q6b">Б) У верасні дні сталі карацейшымі і паветра стала халаднейшым.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q6" value="C" id="q6c"></td>
+                    <td class="text-cell"><label for="q6c">В) За акном шасцелі таполі і недзе далёка спяваў салавей.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q6" value="G" id="q6g"></td>
+                    <td class="text-cell"><label for="q6g">Г) Няхай свеціць сонца і няхай радуюцца дзеці.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q6"></div>
+        </div>
+
+        <div class="question" id="box-q7">
+            <div class="question-title">7. Адзначце бяззлучнікавыя складаныя сказы, у якіх паміж часткамі трэба паставіць працяжнік (знакі прыпынку не расстаўлены):<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q7" value="A" id="q7a"></td>
+                    <td class="text-cell"><label for="q7a">А) Назваўся груздом лезь у кузаў.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q7" value="B" id="q7b"></td>
+                    <td class="text-cell"><label for="q7b">Б) Паглядзіць вокам ашпарыць бокам.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q7" value="C" id="q7c"></td>
+                    <td class="text-cell"><label for="q7c">В) Надышла восень птушкі паляцелі ў цёплыя краі.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q7" value="G" id="q7g"></td>
+                    <td class="text-cell"><label for="q7g">Г) На небасхіле з'явіліся хмары пачаўся моцны навальнічны дождж.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q7"></div>
+        </div>
+
+        <div class="question" id="box-q8">
+            <div class="question-title">8. Вызначце сказы з рознымі відамі сувязі, у якіх правільна пастаўлены знакі прыпынку:<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q8" value="A" id="q8a"></td>
+                    <td class="text-cell"><label for="q8a">А) Калі пачаўся дождж, мы схаваліся пад дрэвам, і, хоць яно не вельмі ратавала, нам было весела.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q8" value="B" id="q8b"></td>
+                    <td class="text-cell"><label for="q8b">Б) Сонца зайшло, і пачало хутка цямнець: у лесе пачуліся дзіўныя начныя гукі.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q8" value="C" id="q8c"></td>
+                    <td class="text-cell"><label for="q8c">В) Вецер суцішыўся, аднак мы ведалі, што надвор'е падманлівае, і хутка можа пачацца навальніца.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q8" value="G" id="q8g"></td>
+                    <td class="text-cell"><label for="q8g">Г) Пайшоў снег, і ўсё навокал пабялела, здавалася, што прырода заснула.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q8"></div>
+        </div>
+
+        <div class="question" id="box-q9">
+            <div class="question-title">9. У якіх выпадках паміж часткамі складанага сказа ставіцца кропка з коскай:<span class="question-type">(множны выбар)</span></div>
+            <table class="options-table">
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q9" value="A" id="q9a"></td>
+                    <td class="text-cell"><label for="q9a">А) Калі часткі бяззлучнікавага складанага сказа далёкія па сэнсе або значна разгорнутыя і маюць унутры свае знакі прыпынку.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q9" value="B" id="q9b"></td>
+                    <td class="text-cell"><label for="q9b">Б) У складаназлучаным сказе, калі яго часткі вельмі разгорнутыя, ускладненыя і аддзелены адна ад адной злучнікамі "але", "аднак", "і".</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q9" value="C" id="q9c"></td>
+                    <td class="text-cell"><label for="q9c">В) Калі вторая частка складаназалежнага сказа пачынаецца з тлумачальнага злучніка.</label></td>
+                </tr>
+                <tr>
+                    <td class="input-cell"><input type="checkbox" name="q9" value="G" id="q9g"></td>
+                    <td class="text-cell"><label for="q9g">Г) Калі першая частка бяззлучнікавага сказа паказвае на час або ўмову здзяйснення дзеяння.</label></td>
+                </tr>
+            </table>
+            <div class="feedback" id="fb-q9"></div>
+        </div>
+
+        <div class="question" id="box-q10">
+            <div class="question-title">10. Разгледзьце наступны складаны сказ з рознымі відамі сувязі (знакі прыпынку не расстаўлены):</div>
+            <div class="sentence-box">
+                «Дрэвы ўжо скінулі сваё лісце і калі мы прыйшлі ў сад пад нагамі ціха шасцеў дыван з жоўтага лісця який нагадваў пра мінулае лета».
+            </div>
+            <div class="question-title" style="margin-top: 15px;">Заданне:<span class="question-type">(пісьмовы адказ)</span></div>
+            <div class="text-cell">
+                Перапішыце сказ, правільна расставіўшы ўсе знакі прыпынку, і пісьмова абгрунтуйце пастаноўку (або адсутнасць) коскі на сутыкненні злучнікаў <strong>«і калі»</strong>.
+            </div>
+            <textarea class="text-area" id="q10-answer" placeholder="Увядзіце ваш адказ сюды..."></textarea>
+            <div class="feedback" id="fb-q10"></div>
+        </div>
+
+        <button type="submit" class="submit-btn">Завяршыць тэст і праверыць</button>
+
+    </form>
+
+    <script>
+        function checkQuiz() {
+            let score = 0;
+            const answers = {
+                q1: "C",
+                q2: "A",
+                q3: ["A", "B", "G"],
+                q4: ["A", "C"],
+                q5: ["A", "B", "G"],
+                q6: ["A", "B", "C"],
+                q7: ["A", "B"],
+                q8: ["A", "B", "C"],
+                q9: ["A", "B"]
+            };
+
+            const q1Selected = document.querySelector('input[name="q1"]:checked');
+            const fb1 = document.getElementById('fb-q1');
+            fb1.style.display = "block";
+            if(q1Selected && q1Selected.value === answers.q1) {
+                score++;
+                fb1.className = "feedback correct";
+                fb1.innerHTML = "<b>Правільна!</b> Хвіліна — і ўсё навокал закруцілася (выражае хуткую змену падзей).";
+            } else {
+                fb1.className = "feedback incorrect";
+                fb1.innerHTML = "<b>Няправільна.</b> Правільны адказ: В.";
+            }
+
+            const q2Selected = document.querySelector('input[name="q2"]:checked');
+            const fb2 = document.getElementById('fb-q2');
+            fb2.style.display = "block";
+            if(q2Selected && q2Selected.value === answers.q2) {
+                score++;
+                fb2.className = "feedback correct";
+                fb2.innerHTML = "<b>Правільна!</b> Коска не патрэбна, калі ёсць агульны дарадны член ці агульную пабочную канструкцыю.";
+            } else {
+                fb2.className = "feedback incorrect";
+                fb2.innerHTML = "<b>Няправільна.</b> Правільны адказ: А.";
+            }
+
+            function checkMultiple(qName, fbId, correctAnswers, letterMapping, explanation) {
+                const checkedBoxes = document.querySelectorAll(`input[name="${qName}"]:checked`);
+                const selectedValues = Array.from(checkedBoxes).map(cb => cb.value);
+                const fb = document.getElementById(fbId);
+                fb.style.display = "block";
+                
+                const isCorrect = selectedValues.length === correctAnswers.length && 
+                                  selectedValues.every(val => correctAnswers.includes(val));
+                
+                const correctLetters = correctAnswers.map(val => letterMapping[val] || val);
+                
+                if(isCorrect) {
+                    score++;
+                    fb.className = "feedback correct";
+                    fb.innerHTML = "<b>Правільна!</b> Адказана верна. " + explanation;
+                } else {
+                    fb.className = "feedback incorrect";
+                    fb.innerHTML = "<b>Няправільна.</b> Правільныя варыянты: " + correctLetters.join(', ') + ".<br><small>" + explanation + "</small>";
+                }
+            }
+
+            const ruLetters = { "A": "А", "B": "Б", "C": "В", "G": "Г" };
+
+            checkMultiple('q3', 'fb-q3', answers.q3, ruLetters, "У варыянце В коска не ставіцца з-за часціцы 'не' перад 'каб'.");
+            checkMultiple('q4', 'fb-q4', answers.q4, ruLetters, "А — сувязь тлумачэння, В — прычына.");
+            checkMultiple('q5', 'fb-q5', answers.q5, ruLetters, "У Б коска паміж 'што калі' не патрэбна, бо далей ідзе 'то'. Астатнія расстаўлены правільна.");
+            checkMultiple('q6', 'fb-q6', answers.q6, ruLetters, "У Г коска не патрэбна перад 'і', бо абедзве часткі пажадальныя з агульнай часціцай 'няхай'.");
+            checkMultiple('q7', 'fb-q7', answers.q7, ruLetters, "А — умоўныя адносіны, Б — рэзкае супрацьпастаўленне.");
+            checkMultiple('q8', 'fb-q8', answers.q8, ruLetters, "У Г памылка — прапушчаны знак прыпынку перад 'здавалася'.");
+            checkMultiple('q9', 'fb-q9', answers.q9, ruLetters, "Кропка з коскай ужываецца ў СЗС і БСС, калі часткі вельмі разгорнутыя і маюць свае знакі.");
+
+            const scoreDisplay = document.getElementById('score-display');
+            scoreDisplay.innerText = score;
+            document.getElementById('result-container').style.display = "block";
+            window.scrollTo({top: 0, behavior: 'smooth'});
+
+            const fb10 = document.getElementById('fb-q10');
+            fb10.style.display = "block";
+            fb10.className = "feedback written";
+            fb10.innerHTML = "<b>Узор адказу для самаправеркі:</b><br>" +
+                             "<i>Дрэвы ўжо скінулі сваё лісце, і, калі мы прыйшлі ў сад, пад нагамі ціха шасцеў дыван з жоўтага лісця, який нагадваў пра мінулае лета.</i><br>" +
+                             "<b>Тлумачэнне:</b> Коска на сутыкненні 'і, калі' ставіцца, таму што даданую частку ('калі мы прыйшлі ў сад') можна апусціць або пераставіць без змены структуры сказа (далей у галоўнай частцы няма слова 'то' ці 'дык').";
+        }
+        <a href="https://site.com/page">
+    </script>
+</body>
+</html>
